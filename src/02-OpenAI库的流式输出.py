@@ -26,18 +26,16 @@ def chat_example():
         # 发起对话请求
         # messages 是对话历史列表，role 有三种：system（系统设定）、user（用户）、assistant（模型回复）
         response = client.chat.completions.create(
-            model="deepseek-v3",   # 使用通义千问 Turbo 模型（速度快、价格低）
+            model="qwen3-max",
             messages=[
-                {
-                    "role": "system",
-                    "content": "You are a helpful assistant."  # 系统提示：设定模型的角色和行为
-                },
-                {
-                    "role": "user",
-                    "content": "你好，你能做什么"              # 用户发送的消息内容
-                }
+                {"role": "system", "content": "你是AI助理，回答很简洁"},
+                {"role": "user", "content": "小明有2条宠物狗"},
+                {"role": "assistant", "content": "好的"},
+                {"role": "user", "content": "小红有3只宠物猫"},
+                {"role": "assistant", "content": "好的"},
+                {"role": "user", "content": "总共有几个宠物？"}
             ],
-            stream=True,  # 开启流式输出：模型边生成边返回，避免长时间等待
+            stream=True      # 开启了流式输出的功能
         )
 
 
