@@ -4,8 +4,11 @@
 
 ### 强制要求
 1. **即时性**：操作完成后，在告知用户之前，优先更新日志。
-2. **准确性**：必须真实记录所做的每一步改动，包括产生错误的尝试及其修正过程。
-3. **关联性**：如果之前的任务有更新，应在日志中注明关联的旧条目。
+2. **报表风格**：必须遵循 [.skills/operation_logger.md](file:///d:/8-python-project/Cinemind/.skills/operation_logger.md) 定义的高清晰度"报表风格"。
+3. **格式要素**：
+   - 标题必须包含 `[YYYY-MM-DD HH:mm:ss]`。
+   - 逻辑必须分层（操作描述、改动详情、验证结果）。
+   - 使用 Markdown 检查清单 `- [x]` 记录验证。
 4. **归档位置**：目标文件始终为 `d:\8-python-project\Cinemind\walkthrough.md`。
 
 > [!IMPORTANT]
