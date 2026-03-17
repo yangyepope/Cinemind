@@ -1,5 +1,12 @@
 import os                  # 用于读取系统环境变量
+import sys                 # 用于重定向标准输出编码
 from openai import OpenAI  # 导入 OpenAI 兼容客户端（阿里云 DashScope 支持此接口）
+
+# -------------------------------------------------------
+# 配置环境：确保 Windows 终端能正确显示 UTF-8 字符（如 Emoji）
+# -------------------------------------------------------
+if sys.platform == "win32":
+    sys.stdout.reconfigure(encoding='utf-8')
 
 # -------------------------------------------------------
 # 初始化客户端
@@ -9,7 +16,7 @@ from openai import OpenAI  # 导入 OpenAI 兼容客户端（阿里云 DashScope
 # 推荐设置环境变量：$env:DASHSCOPE_API_KEY = "sk-你的key"
 # -------------------------------------------------------
 client = OpenAI(
-    api_key=os.environ.get("DASHSCOPE_API_KEY", "sk-bfb1f4771d92481b93f987dc615c3d17"),
+    api_key=os.environ.get("DASHSCOPE_API_KEY"),
     base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",  # 阿里云 DashScope 兼容端点
 )
 
@@ -19,7 +26,7 @@ def chat_example():
         # 发起对话请求
         # messages 是对话历史列表，role 有三种：system（系统设定）、user（用户）、assistant（模型回复）
         response = client.chat.completions.create(
-            model="qwen-turbo",   # 使用通义千问 Turbo 模型（速度快、价格低）
+            model="deepseek-v3",   # 使用通义千问 Turbo 模型（速度快、价格低）
             messages=[
                 {
                     "role": "system",
@@ -27,7 +34,7 @@ def chat_example():
                 },
                 {
                     "role": "user",
-                    "content": "你好，你在干什么"              # 用户发送的消息内容
+                    "content": "你好，你能做什么"              # 用户发送的消息内容
                 }
             ],
             stream=True,  # 开启流式输出：模型边生成边返回，避免长时间等待
