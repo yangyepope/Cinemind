@@ -1,0 +1,180 @@
+{
+  "session_id": "dave_long_term",
+  "messages": [
+    {
+      "type": "human",
+      "data": {
+        "content": "我是大卫。我非常喜欢喝拿铁咖啡。",
+        "additional_kwargs": {},
+        "response_metadata": {},
+        "type": "human",
+        "name": null,
+        "id": null
+      }
+    },
+    {
+      "type": "ai",
+      "data": {
+        "content": "很高兴认识你，大卫！你喜欢拿铁咖啡，这真是个不错的口味选择——丝滑的牛奶与浓缩咖啡的平衡，既温和又提神。  \n\n顺便告诉你：我已经记下你喜欢拿铁这件事了（已存入长期记忆）。以后我们可以聊聊不同咖啡豆对拿铁风味的影响、在家制作拿铁的小技巧，或者推荐一些你可能喜欢的咖啡馆。  \n\n你现在是想了解拿铁相关的知识，还是有别的问题需要帮忙？☕",
+        "additional_kwargs": {},
+        "response_metadata": {},
+        "type": "ai",
+        "name": null,
+        "id": null,
+        "tool_calls": [],
+        "invalid_tool_calls": [],
+        "usage_metadata": null
+      }
+    },
+    {
+      "type": "human",
+      "data": {
+        "content": "我记不清我喜欢喝什么了，你能告诉我是哪种咖啡吗？",
+        "additional_kwargs": {},
+        "response_metadata": {},
+        "type": "human",
+        "name": null,
+        "id": null
+      }
+    },
+    {
+      "type": "ai",
+      "data": {
+        "content": "当然可以，大卫！根据我之前记录的信息，你非常喜欢喝**拿铁咖啡**（Caffè Latte）——它是由一份浓缩咖啡（espresso）加上大量蒸汽打发的牛奶，顶部通常有一层薄薄的奶泡，口感顺滑、温和，咖啡味不会太浓烈。\n\n如果你最近在尝试其他饮品或口味有变化，也可以告诉我，我会帮你更新记录！你现在是想重温拿铁的味道，还是想尝试点新花样？☕",
+        "additional_kwargs": {},
+        "response_metadata": {},
+        "type": "ai",
+        "name": null,
+        "id": null,
+        "tool_calls": [],
+        "invalid_tool_calls": [],
+        "usage_metadata": null
+      }
+    },
+    {
+      "type": "human",
+      "data": {
+        "content": "我是大卫。我非常喜欢喝拿铁咖啡。",
+        "additional_kwargs": {},
+        "response_metadata": {},
+        "type": "human",
+        "name": null,
+        "id": null
+      }
+    },
+    {
+      "type": "ai",
+      "data": {
+        "content": "你好，大卫！很高兴再次见到你 😊  \n我已经确认并更新了你的偏好记录：**你非常喜欢喝拿铁咖啡**（Caffè Latte）——这份信息已安全保存在我的长期记忆中。\n\n如果你愿意，我可以：\n- 推荐在家制作更香浓拿铁的技巧（比如牛奶打发温度、咖啡豆选择）  \n- 分享附近或全球值得一试的拿铁特色咖啡馆（如果你告诉我位置）  \n- 帮你探索拿铁的变种，比如香草拿铁、燕麦奶拿铁等  \n\n需要我为你做点什么吗？☕",
+        "additional_kwargs": {},
+        "response_metadata": {},
+        "type": "ai",
+        "name": null,
+        "id": null,
+        "tool_calls": [],
+        "invalid_tool_calls": [],
+        "usage_metadata": null
+      }
+    },
+    {
+      "type": "human",
+      "data": {
+        "content": "我记不清我喜欢喝什么了，你能告诉我是哪种咖啡吗？",
+        "additional_kwargs": {},
+        "response_metadata": {},
+        "type": "human",
+        "name": null,
+        "id": null
+      }
+    },
+    {
+      "type": "ai",
+      "data": {
+        "content": "当然可以，大卫！根据我长期记忆中的记录，你**非常喜欢喝拿铁咖啡**（Caffè Latte）——这是一种由浓缩咖啡（espresso）搭配大量蒸汽加热的牛奶，顶部带有一层细腻奶泡的经典意式咖啡，口感顺滑、温和，奶香与咖啡香平衡得恰到好处。\n\n如果你最近口味有变化，或者想尝试类似拿铁但略有不同的饮品（比如澳白、卡布奇诺、燕麦拿铁等），也可以告诉我，我会帮你更新偏好并给出建议！\n\n需要我为你推荐一款今日拿铁搭配吗？☕",
+        "additional_kwargs": {},
+        "response_metadata": {},
+        "type": "ai",
+        "name": null,
+        "id": null,
+        "tool_calls": [],
+        "invalid_tool_calls": [],
+        "usage_metadata": null
+      }
+    },
+    {
+      "type": "human",
+      "data": {
+        "content": "我是谁，我喜欢喝什么",
+        "additional_kwargs": {},
+        "response_metadata": {},
+        "type": "human",
+        "name": null,
+        "id": null
+      }
+    },
+    {
+      "type": "ai",
+      "data": {
+        "content": "你是**大卫**，你**非常喜欢喝拿铁咖啡**（Caffè Latte）！  \n\n这是你之前告诉我的信息，我已经把它安全地保存在长期记忆中了。拿铁由浓缩咖啡和大量丝滑的蒸奶组成，顶部有一层轻柔的奶泡——温和、顺口，又带着恰到好处的咖啡香气，确实是个很棒的选择！\n\n如果你哪天想换口味，或者想深入了解拿铁的世界（比如不同豆子、牛奶替代品、拉花技巧等），我随时都在 ☕😊",
+        "additional_kwargs": {},
+        "response_metadata": {},
+        "type": "ai",
+        "name": null,
+        "id": null,
+        "tool_calls": [],
+        "invalid_tool_calls": [],
+        "usage_metadata": null
+      }
+    },
+    {
+      "type": "human",
+      "data": {
+        "content": "我是谁，我喜欢喝什么",
+        "additional_kwargs": {},
+        "response_metadata": {},
+        "type": "human",
+        "name": null,
+        "id": null
+      }
+    },
+    {
+      "type": "ai",
+      "data": {
+        "content": "你是**大卫**，你**非常喜欢喝拿铁咖啡**（Caffè Latte）！  \n\n这是我从你之前的对话中记住并存入长期记忆的信息。拿铁以浓缩咖啡为基底，加入大量温热的蒸奶和一层细腻奶泡，口感柔滑、香气平衡——很适合像你这样懂得享受日常小确幸的人 ☕。\n\n需要我为你推荐一款特别的拿铁做法，或者聊聊咖啡豆的选择吗？",
+        "additional_kwargs": {},
+        "response_metadata": {},
+        "type": "ai",
+        "name": null,
+        "id": null,
+        "tool_calls": [],
+        "invalid_tool_calls": [],
+        "usage_metadata": null
+      }
+    },
+    {
+      "type": "human",
+      "data": {
+        "content": "我是谁，我喜欢喝什么",
+        "additional_kwargs": {},
+        "response_metadata": {},
+        "type": "human",
+        "name": null,
+        "id": null
+      }
+    },
+    {
+      "type": "ai",
+      "data": {
+        "content": "你是**大卫**，你**非常喜欢喝拿铁咖啡**（Caffè Latte）！  \n\n这个信息我已经多次确认，并安全存储在我的长期记忆中。无论你今天是想重温经典拿铁的配方、探索新的牛奶搭配（比如燕麦奶或杏仁奶拿铁），还是寻找附近值得打卡的咖啡馆，我都很乐意为你提供帮助。\n\n需要点什么建议吗，大卫？☕",
+        "additional_kwargs": {},
+        "response_metadata": {},
+        "type": "ai",
+        "name": null,
+        "id": null,
+        "tool_calls": [],
+        "invalid_tool_calls": [],
+        "usage_metadata": null
+      }
+    }
+  ]
+}

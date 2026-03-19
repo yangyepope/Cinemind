@@ -367,8 +367,26 @@
 
 ---
 
-## [当前项目实战进度总结]
+## [2026-03-19 10:26:00] 阶段二十六：RunnableLambda 动态数据桥接实战
 
-- **核心组件**: 系统性掌握了 LangChain Expression Language (LCEL) 的基础组合、`Runnable` 接口底层逻辑、以及关键解析器（`StrOutputParser`, `JsonOutputParser`）的应用。
-- **环境韧性**: 通过 `sys.stdout.reconfigure` 机制，在 Windows 终端环境下实现了零乱码的中文/Emoji 流式输出。
-- **技术栈**: 确认开发环境统一为 `uv` 管理的 Python 3.12.9，依赖项已完全适配。
+- **操作背景**: 在构建多级 Chain 时，解决上游模型（起名）与下游提示词（解析）之间的数据结构不匹配问题。
+- **改动详情**:
+  - **新建文件**: 创建了 [16-RunnableLambda的基础使用.py](file:///d:/8-python-project/Cinemind/src/02-LangChainRAG开发/16-RunnableLambda的基础使用.py)。
+  - **技术实现**: 使用 `RunnableLambda` 将第一个模型的 `AIMessage` 响应动态映射为第二个 Prompt 模板需要的 `{"name": ...}` 字典格式，取代了传统中间变量的手动提取。
+- **业务意义**: 实现了“自动起名 -> 名字含义解析”的端到端自动化业务闭环，展示了自定义函数在 LCEL 链条中的桥接作用。
+- **验证结果**:
+  - [x] 模型成功为“曹”姓女孩生成名字。
+  - [x] 名字被 `RunnableLambda` 精准捕获并传递给解析模型，成功完成了文化寓意的深度解读。
+
+---
+
+## [2026-03-19 11:02:00] 阶段二十七：RunnableWithMessageHistory 会话记忆方案
+
+- **需求背景**: 业务需要支持多轮对话能力，且必须实现基于 `session_id` 的用户级会话历史物理隔离。
+- **改动详情**:
+  - **新建文件**: 创建了 [17-会话记忆的实现.py](file:///d:/8-python-project/Cinemind/src/02-LangChainRAG开发/17-会话记忆的实现.py)。
+  - **技术核心**: 定义了 `get_history` 函数配合 `InMemoryChatMessageHistory` 和全局 `store`。使用 `RunnableWithMessageHistory` 为业务链条注入了状态追踪。
+- **验证表现**:
+  - [x] **身份保持**: 成功模拟用户 A（曹操）自报姓名后，在第二轮提问“我是谁”时，AI 能够精准回忆出其身份。
+  - [x] **会话隔离**: 引入用户 B（刘备）进行交叉对话，验证了不同 Session 间的历史数据互不干扰，保证了数据的隐私与准确性。
+  - [x] **调试增强**: 在链条中集成了 `print_prompt` 钩子，不仅能看到最终结果，还能实时观察注入历史后的完整提示词渲染内容。
