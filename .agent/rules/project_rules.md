@@ -71,3 +71,14 @@
 - **Pydantic 校验**：所有持久化到磁盘或数据库的消息，必须通过 Pydantic 模型进行结构校验。
 - **路径安全**：严禁直接将 `session_id` 作为文件名，必须进行合法性检查（如 `isalnum()`）以防止路径穿越攻击。
 - **技能参考**：详细实现细节请参考 [`.skills/langchain_memory_persistence/SKILL.md`](file:///d:/8-python-project/Cinemind/.skills/langchain_memory_persistence/SKILL.md)。
+
+---
+
+## 5. 计划文档同步 (Planning Documentation Sync)
+
+AI 助手在执行复杂任务时生成的计划类文档（如任务清单、实施方案等），**必须**同步保存到项目根目录下的 `document/` 文件夹中。
+
+### 强制要求
+1. **命名规范**: `document/YYYYMMDD_[任务描述]_[文档类型].md`。
+   - 例如: `document/20260319_会话持久化_任务清单.md`。
+2. **即时更新**: 计划文档一旦在内存或私有目录中生成或修改，应立即按照此规范同步到 `document/` 文件夹中。
