@@ -1,84 +1,59 @@
 # Cinemind 项目开发与 AI 助手规则总则
 
-本文档合并了项目中的所有自定义规则，适用于 AI 助手（如 Antigravity AI 等）在协助开发时的全局行为准则。
+本文档定义了 Cinemind 项目的全局开发准则，适用于 AI 助手协助开发时的所有行为。
 
-## 1. 语言规则 (Language Rules)
+## 1. 语言与注释规范 (Language & Documentation)
 
-在所有 agent 会话中，输出内容必须使用**简体中文**，包括：
-- 代码注释（如用户未特别指明语言）
-- 解释说明
-- 错误诊断
-- 计划文档（task.md、implementation_plan.md、walkthrough.md 等）
-*技术术语（如函数名、命令、代码本身）保持原文，仅说明性文字翻译为中文。*
+- **简体中文优先**：在所有 agent 会话和输出中，必须使用简体中文，包括代码注释、解释说明、错误诊断及所有计划文档（task.md 等）。
+- **技术术语保持原文**：函数名、库名、变量名等技术性称谓保持英文，仅解释性文字翻译。
+- **模块文档 (Docstrings)**：对于所有公共模块、类和方法，必须添加标准的中文文档字符串（Google 或 Sphinx 风格）。要求全部使用中文。
 
 ---
 
-## 2. 基础开发规范
+## 2. 核心开发原则 (Core Development)
 
-本文档详述了 Cinemind 项目中，无论是编写任何语言的代码或是配置文件时，都应当遵循的基础开发规则。更详细的“工程卓越性”标准请参考 [`.skills/general_programming_excellence/SKILL.md`](file:///d:/8-python-project/Cinemind/.skills/general_programming_excellence/SKILL.md)。
-
-- **中文注释**：所有的代码注释、文档描述以中文作为首选语言。
-- **自我解释的代码**：选择具有描述性的变量、函数和类名，使其能够清楚地表明自身用途。
-- **模块化设计**：将复杂问题拆分为更小、可复用的代码块（如函数/类/模块）。
-- **统一的代码风格**：在整个项目中保持一致的编码风格，并尊重当前编辑文件已有的规范。
-- **快速失败 (Fail Fast)**：编写遇到预期外情况时尽早报错的代码，坚决避免静默失败（Silent Failures）。
-- **不要重复自己 (DRY)**：将通用的逻辑提炼出来，避免出现重复的代码块。
-- **保持简单 (KISS)**：优先采用简单、可读性强的方案，而不是试图编写看似“聪明”实则晦涩难懂的代码。
+- **模块化设计**：将复杂逻辑拆分为可复用的最小单元。遵循 DRY (Don't Repeat Yourself) 原则。
+- **快速失败 (Fail Fast)**：尽早捕获并显式处理预期的错误，坚决避免静默失败。
+- **PEP 8 规范**：Python 代码必须严格遵循 PEP 8 命名习惯与结构编排（建议使用 `f-string` 处理字符串格式化）。
+- **类型提示 (Type Hinting)**：强制要求为所有函数参数及返回值添加类型提示。
 
 ---
 
-## 3. Python 最佳实践
+## 3. 源码拆解与架构分析规范 (Source Code Teardown)
 
-本文档详述了为 Cinemind 项目编写 Python 代码时应当遵循的具体规则。
-
-- **中文环境**：编写的所有注释、配置说明文件，均使用中文。
-- **符合 PEP 8 规范**：格式编排、命名习惯和代码结构均应遵循标准的 Python 代码风格指南（PEP 8）。
-- **类型提示 (Type Hinting)**：为所有函数的参数及返回值使用类型提示（利用原生 Python 类型特性或 `typing` 模块）。
-- **文档字符串 (Docstrings)**：对于所有的公共模块、类和方法，都需添加标准的文档字符串（如 Google 或 Sphinx 风格）。要求全部使用中文书写。
-- **异常处理**：
-  - 应当捕获特定的异常，而非使用裸露的 `except:` 或者随意捕获宽泛的 `Exception`（除非在极端必要的情况下）。
-  - 无论何时抛出或捕获异常，都应提供意义明确的错误提示信息。
-- **虚拟环境**：始终依靠虚拟环境（如 venv/conda）来隔离项目相关的外部依赖。
-- **路径操作**：推荐使用 `pathlib` 库进行所有的文件系统路径拼接、处理，而不是较老旧的 `os.path` 模块。
-- **字符串格式化**：相比拼接等旧式格式化方法，始终优先使用 f 字符串（`f"..."`）。
+每当涉及复杂源码拆解、核心机制解析或原理解析时，**必须**输出以下图示及分析：
+- **静态类图** (`classDiagram`)：展示组件间的依赖与继承关系。
+- **宏观时序图** (`sequenceDiagram`)：展示交互路径（用户 -> 拦截器 -> 执行器 -> 存储）。
+- **逻辑流程图** (`graph TD`)：划分明确的执行阶段（环境准备、核心执行、后处理）。
+- **底层表现对比**：使用表格对比不同实现方案的物理性能差异（如 I/O 次数）。
 
 ---
 
-## 4. 自动操作日志记录 (Operation Logging)
+## 4. 自动化操作日志 (Operation Logging)
 
-每当 AI 助手完成一次实质性的操作（包括但不限于代码修改、文件创建、命令运行、Git 提交等），**必须**立即更新记录。
-
-### 强制要求
-1. **唯一性**：操作完成后，在告知用户之前，优先更新记录。**严禁覆盖旧的记录文件**，应根据任务内容创建唯一的文件名。
-2. **命名格式**：目标文件命名推荐为 `walkthrough_[任务描述]_[日期].md`。或在项目根目录的 `walkthrough.md` 中以追加（Append）模式记录，但需确保时间戳清晰。
-3. **格式要素**：
-   - 标题必须包含 `[YYYY-MM-DD HH:mm:ss]`。
-   - 逻辑必须分层（操作描述、改动详情、验证结果）。
-   - 使用 Markdown 检查清单 `- [x]` 记录验证。
-4. **归档要求**：记录应按时间顺序保留在项目目录中，作为项目的历史证据。
-
-> [!IMPORTANT]
-> 记录日志不是可选的，作为工作流程中不可分割的一部分。它旨在让用户随时掌握项目的历史变迁。
+- **唯一主日志**：项目根目录下的 [walkthrough.md](file:///d:/8-python-project/Cinemind/walkthrough.md) 为项目唯一持久化操作记录。
+- **记录格式**：每项实质性改动后，必须以 `## [YYYY-MM-DD HH:mm:ss] 阶段名：任务短评` 格式追加记录，包含操作描述、改动详情、验证结果。
+- **清理习惯**：严禁创建冗余的临时日志文件。除 `walkthrough.md` 外的同类记录应在任务结束后及时清理。
 
 ---
 
-## 6. LangChain 会话持久化规范 (Memory Persistence)
+## 5. 计划文档管理 (Planning Documentation)
 
-在实现长短期记忆（Long-Term Memory）时，必须遵循以下性能与安全规范：
-
-- **优先使用批量写入**：必须重写 `add_messages`（复数形式）而非单个 `add_message`。
-- **官方序列化**：统一使用 `langchain_core.messages` 中的 `message_to_dict` 和 `messages_from_dict` 进行数据转换。
-- **Pydantic 校验**：所有持久化到磁盘或数据库的消息，必须通过 Pydantic 模型进行结构校验。
-- **路径安全**：严禁直接将 `session_id` 作为文件名，必须进行合法性检查（如 `isalnum()`）以防止路径穿越攻击。
-- **技能参考**：详细实现细节请参考 [`.skills/langchain_memory_persistence/SKILL.md`](file:///d:/8-python-project/Cinemind/.skills/langchain_memory_persistence/SKILL.md)。
+- **同步要求**：所有实施方案 (`implementation_plan`)、任务清单 (`task`) 等计划类文档必须同步至 [document/](file:///d:/8-python-project/Cinemind/document/) 目录。
+- **命名规范**：使用 `document/YYYYMMDD_[任务简述]_[文档类型].md` 格式进行存档。
 
 ---
 
-## 5. 计划文档同步 (Planning Documentation Sync)
+## 6. 环境与安全规范 (Environment & Security)
 
-AI 助手在执行复杂任务时生成的计划类文档（如任务清单、实施方案等），**必须**同步保存到项目根目录下的 `document/` 文件夹中。
+- **路径操作**：强制使用 `pathlib` (Path) 处理路径，禁止使用字符串拼接或 `os.path`。
+- **虚拟环境隔离**：始终确认并在项目根目录下的 `.venv` 或指定的虚拟环境中运行代码。
+- **路径安全防护**：处理涉及用户输入（如 `session_id`）的文件路径时，必须执行非法字符过滤或 `isalnum()` 检查以防止路径穿越攻击。
 
-### 强制要求
-1. **命名规范**: `document/YYYYMMDD_[任务描述]_[文档类型].md`。
-   - 例如: `document/20260319_会话持久化_任务清单.md`。
-2. **即时更新**: 计划文档一旦在内存或私有目录中生成或修改，应立即按照此规范同步到 `document/` 文件夹中。
+---
+
+## 7. LangChain 特色组件规范 (Specialized Components)
+
+- **批量 I/O 优化**：自定义 `BaseChatMessageHistory` 子类必须重写 `add_messages` 批量方法，严禁退化为单次 I/O。
+- **官方序列化**：统一使用 `message_to_dict` 和 `messages_from_dict` 以保留 MetaData。
+- **Pydantic 数据建模**：持久化数据（如 JSON/DB 存储）必须通过 Pydantic 模型层进行结构校验。

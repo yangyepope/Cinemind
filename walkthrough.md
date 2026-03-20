@@ -390,3 +390,64 @@
   - [x] **身份保持**: 成功模拟用户 A（曹操）自报姓名后，在第二轮提问“我是谁”时，AI 能够精准回忆出其身份。
   - [x] **会话隔离**: 引入用户 B（刘备）进行交叉对话，验证了不同 Session 间的历史数据互不干扰，保证了数据的隐私与准确性。
   - [x] **调试增强**: 在链条中集成了 `print_prompt` 钩子，不仅能看到最终结果，还能实时观察注入历史后的完整提示词渲染内容。
+
+---
+
+## [2026-03-19 19:35:00] 阶段二十八：源码拆解能力与文档规范化升级
+
+- **操作背景**: 为了提供更加专业、结构化的源码分析报告，对底层拆解流程进行了规范化固化。
+- **技术实现**:
+  - **新增 Skill**: 创建并优化了 [.skills/source_code_teardown/SKILL.md](file:///d:/8-python-project/Cinemind/.skills/source_code_teardown/SKILL.md)，强制要求输出架构类图（Mermaid classDiagram）、宏观时序流转图（sequenceDiagram）和生命周期逻辑流程图（graph TD）。
+  - **文档范式更新**: 对 [01-长期会话记忆执行拆解.md](file:///d:/8-python-project/Cinemind/document/01-LangChain源码底层解析/01-长期会话记忆执行拆解.md) 进行了重构，引入了与截图完全对齐的“`RunnableWithMessageHistory` 底层执行流”图示及配文。
+- **验证结果**:
+  - [x] 所有图示渲染正常，文字描述与 LangChain 官方源码逻辑高度匹配。
+  - [x] 成功建立了“上帝视角”的源码解析模版。
+
+---
+
+## [2026-03-20 10:35:00] 阶段二十九：Python 文档智能分段实战 (RAG 数据预处理)
+
+- **操作背景**: 根据教学参考，实现对长文本的智能化切片（Chunking），作为 RAG 知识库构建的基础环节。
+- **关键改动**:
+  - **新建实战脚本**: 创建了 [21-Python文档分段.py](file:///d:/8-python-project/Cinemind/src/02-LangChainRAG开发/21-Python文档分段.py)。
+  - **技术路径**: 
+    - 使用 `TextLoader` 提取 [python文档分段.txt](file:///d:/8-python-project/Cinemind/src/02-LangChainRAG开发/data/python文档分段.txt)。
+    - 配置 `RecursiveCharacterTextSplitter` 为 `chunk_size=500` 和 `overlap=50`。
+    - 在内存中通过 10 余种中英文分隔符自动推演最优切分点。
+- **环境配置**:
+  - [x] 在 `.venv` 虚拟环境下使用 `uv` 成功预装 `langchain-community` 和 `langchain-text-splitters`。
+- **验证结果**:
+  - [x] 原始文档成功转化为多份语义高度集中的分段。
+
+---
+
+## [2026-03-20 10:42:00] 阶段三十：项目规则底层架构优化与日志清理
+
+- **操作描述**: 响应用户对冗余文件的清理需求，并对全局开发规则进行深度重构。
+- **改动详情**:
+  - **文件清理**: 物理删除了冗余的 `walkthrough_优化规则_20260319.md`。
+  - **规则重构**: 对 [project_rules.md](file:///d:/8-python-project/Cinemind/.agent/rules/project_rules.md) 进行了版本化更新：
+    - **逻辑对齐**: 修复了章节编号（1-7），使文档逻辑更严谨。
+    - **规范整合**: 正式将“源码拆解深度分析规范”整合进全局规则，要求未来所有复杂代码解析必须输出三类架构图（类图、时序图、流程图）。
+    - **日志收放**: 明确 [walkthrough.md](file:///d:/8-python-project/Cinemind/walkthrough.md) 为唯一持久化日志，建立“任务结束即清理临时文件”的良好习惯。
+- **验证结果**:
+  - [x] `project_rules.md` 结构已更新，章节逻辑清晰。
+  - [x] 冗余日志文件已确认彻底移除。
+
+---
+
+## [2026-03-20 11:00:00] 阶段三十一：PDF 文档加载与加密处理实战
+
+- **需求背景**: 根据用户提供的截图，创建并完善 22 号脚本，演示如何使用 `PyPDFLoader` 多模式加载 PDF 文件。
+- **改动详情**:
+  - **依赖安装**: 使用 `uv` 安装了 `pypdf` 依赖库。
+  - **新建文件**: 创建了 [22-PyPDFLoader的使用.py](file:///d:/8-python-project/Cinemind/src/02-LangChainRAG开发/22-PyPDFLoader的使用.py)。
+  - **技术实现**: 
+    - 实现了按页加载 (`mode="page"`) 和合并加载 (`mode="single"`) 两种模式。
+    - 使用 `lazy_load()` 迭代器提升了大文件的处理效率。
+    - **加密适配**: 增加了对加密 PDF 的 `password` 参数支持。
+    - **逻辑增强**: 针对验证中发现的“文件实际未加密”情况，增加了 `try-except` 自动降级加载逻辑。
+- **验证结果**:
+  - [x] **pdf1.pdf**: 成功按页加载，输出了前两页的内容预览。
+  - [x] **pdf2.pdf**: 虽然标记为加密，但验证发现实际为非加密状态，脚本成功通过降级逻辑完成加载。
+  - [x] **规范对齐**: 代码完全遵循 `project_rules.md` 中的中文注释及 `pathlib` 路径规范。

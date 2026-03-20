@@ -1,0 +1,240 @@
+langchain-ai/open-swe 是由 LangChain 官方推出的一款**开源异步编程代理（Open-Source Asynchronous Coding Agent）**框架。
+
+它的核心目标是帮助企业和团队构建自己的内部 AI 编码助手（例如 Slack 机器人、CLI 工具或 Web 应用），类似于 Stripe、Ramp 和 Coinbase 等公司内部使用的 AI 工程师工具。
+
+以下是该项目的主要特点和功能：
+
+1. 核心定位
+企业级内部工具： 它不是一个简单的聊天机器人，而是一个可以集成到公司现有流程（如 Slack、GitHub、Linear）中的异步代理。
+
+参考架构： 它提供了像 Stripe 的 "Minions" 或 Coinbase 的 "Cloudbot" 那样的成熟架构，让开发者无需从零开始构建复杂的 AI 编码工作流。
+
+2. 技术栈
+基于 LangGraph 和 Deep Agents： 利用 LangChain 最新的 LangGraph（用于构建状态化、多步循环的代理）和 Deep Agents（具备规划、子代理调度和文件系统操作能力的代理框架）开发。
+
+3. 主要功能特性
+云沙箱运行（Sandboxing）： 支持在隔离的云环境（如 Modal, Daytona, Runloop 等）中运行代码，确保安全性，并允许代理执行复杂的编译、测试任务。
+
+多渠道集成： 支持通过 Slack 命令或 Linear 工单触发任务，并能自动生成 GitHub Pull Request (PR)。
+
+上下文感知： 能够通过 AGENTS.md 或源码分析，深入理解代码库的上下文。
+
+子代理编排： 复杂任务会被拆解给专门的“子代理”处理，并通过中间件（Middleware）进行校验和把控。
+
+4. 适用场景
+自动化修复 Bug： 接收到错误报告后，自动在沙箱中重现并尝试修复。
+
+代码清理与重构： 批量执行一些机械性的代码更新任务。
+
+快速原型开发： 通过自然语言描述直接生成可运行的代码 PR。
+
+简而言之，如果你想为自己的公司构建一个能够理解私有代码库、在安全沙箱里跑测试、并能自己提 PR 的“AI 实习生”，这个项目就是官方提供的“最佳实践方案”。
+
+
+
+langchain-ai/open-swe 是由 LangChain 官方推出的一款**开源异步编程代理（Open-Source Asynchronous Coding Agent）**框架。
+
+它的核心目标是帮助企业和团队构建自己的内部 AI 编码助手（例如 Slack 机器人、CLI 工具或 Web 应用），类似于 Stripe、Ramp 和 Coinbase 等公司内部使用的 AI 工程师工具。
+
+以下是该项目的主要特点和功能：
+
+1. 核心定位
+企业级内部工具： 它不是一个简单的聊天机器人，而是一个可以集成到公司现有流程（如 Slack、GitHub、Linear）中的异步代理。
+
+参考架构： 它提供了像 Stripe 的 "Minions" 或 Coinbase 的 "Cloudbot" 那样的成熟架构，让开发者无需从零开始构建复杂的 AI 编码工作流。
+
+2. 技术栈
+基于 LangGraph 和 Deep Agents： 利用 LangChain 最新的 LangGraph（用于构建状态化、多步循环的代理）和 Deep Agents（具备规划、子代理调度和文件系统操作能力的代理框架）开发。
+
+3. 主要功能特性
+云沙箱运行（Sandboxing）： 支持在隔离的云环境（如 Modal, Daytona, Runloop 等）中运行代码，确保安全性，并允许代理执行复杂的编译、测试任务。
+
+多渠道集成： 支持通过 Slack 命令或 Linear 工单触发任务，并能自动生成 GitHub Pull Request (PR)。
+
+上下文感知： 能够通过 AGENTS.md 或源码分析，深入理解代码库的上下文。
+
+子代理编排： 复杂任务会被拆解给专门的“子代理”处理，并通过中间件（Middleware）进行校验和把控。
+
+4. 适用场景
+自动化修复 Bug： 接收到错误报告后，自动在沙箱中重现并尝试修复。
+
+代码清理与重构： 批量执行一些机械性的代码更新任务。
+
+快速原型开发： 通过自然语言描述直接生成可运行的代码 PR。
+
+简而言之，如果你想为自己的公司构建一个能够理解私有代码库、在安全沙箱里跑测试、并能自己提 PR 的“AI 实习生”，这个项目就是官方提供的“最佳实践方案”。
+
+
+
+
+langchain-ai/open-swe 是由 LangChain 官方推出的一款**开源异步编程代理（Open-Source Asynchronous Coding Agent）**框架。
+
+它的核心目标是帮助企业和团队构建自己的内部 AI 编码助手（例如 Slack 机器人、CLI 工具或 Web 应用），类似于 Stripe、Ramp 和 Coinbase 等公司内部使用的 AI 工程师工具。
+
+以下是该项目的主要特点和功能：
+
+1. 核心定位
+企业级内部工具： 它不是一个简单的聊天机器人，而是一个可以集成到公司现有流程（如 Slack、GitHub、Linear）中的异步代理。
+
+参考架构： 它提供了像 Stripe 的 "Minions" 或 Coinbase 的 "Cloudbot" 那样的成熟架构，让开发者无需从零开始构建复杂的 AI 编码工作流。
+
+2. 技术栈
+基于 LangGraph 和 Deep Agents： 利用 LangChain 最新的 LangGraph（用于构建状态化、多步循环的代理）和 Deep Agents（具备规划、子代理调度和文件系统操作能力的代理框架）开发。
+
+3. 主要功能特性
+云沙箱运行（Sandboxing）： 支持在隔离的云环境（如 Modal, Daytona, Runloop 等）中运行代码，确保安全性，并允许代理执行复杂的编译、测试任务。
+
+多渠道集成： 支持通过 Slack 命令或 Linear 工单触发任务，并能自动生成 GitHub Pull Request (PR)。
+
+上下文感知： 能够通过 AGENTS.md 或源码分析，深入理解代码库的上下文。
+
+子代理编排： 复杂任务会被拆解给专门的“子代理”处理，并通过中间件（Middleware）进行校验和把控。
+
+4. 适用场景
+自动化修复 Bug： 接收到错误报告后，自动在沙箱中重现并尝试修复。
+
+代码清理与重构： 批量执行一些机械性的代码更新任务。
+
+快速原型开发： 通过自然语言描述直接生成可运行的代码 PR。
+
+简而言之，如果你想为自己的公司构建一个能够理解私有代码库、在安全沙箱里跑测试、并能自己提 PR 的“AI 实习生”，这个项目就是官方提供的“最佳实践方案”。
+
+
+
+
+langchain-ai/open-swe 是由 LangChain 官方推出的一款**开源异步编程代理（Open-Source Asynchronous Coding Agent）**框架。
+
+它的核心目标是帮助企业和团队构建自己的内部 AI 编码助手（例如 Slack 机器人、CLI 工具或 Web 应用），类似于 Stripe、Ramp 和 Coinbase 等公司内部使用的 AI 工程师工具。
+
+以下是该项目的主要特点和功能：
+
+1. 核心定位
+企业级内部工具： 它不是一个简单的聊天机器人，而是一个可以集成到公司现有流程（如 Slack、GitHub、Linear）中的异步代理。
+
+参考架构： 它提供了像 Stripe 的 "Minions" 或 Coinbase 的 "Cloudbot" 那样的成熟架构，让开发者无需从零开始构建复杂的 AI 编码工作流。
+
+2. 技术栈
+基于 LangGraph 和 Deep Agents： 利用 LangChain 最新的 LangGraph（用于构建状态化、多步循环的代理）和 Deep Agents（具备规划、子代理调度和文件系统操作能力的代理框架）开发。
+
+3. 主要功能特性
+云沙箱运行（Sandboxing）： 支持在隔离的云环境（如 Modal, Daytona, Runloop 等）中运行代码，确保安全性，并允许代理执行复杂的编译、测试任务。
+
+多渠道集成： 支持通过 Slack 命令或 Linear 工单触发任务，并能自动生成 GitHub Pull Request (PR)。
+
+上下文感知： 能够通过 AGENTS.md 或源码分析，深入理解代码库的上下文。
+
+子代理编排： 复杂任务会被拆解给专门的“子代理”处理，并通过中间件（Middleware）进行校验和把控。
+
+4. 适用场景
+自动化修复 Bug： 接收到错误报告后，自动在沙箱中重现并尝试修复。
+
+代码清理与重构： 批量执行一些机械性的代码更新任务。
+
+快速原型开发： 通过自然语言描述直接生成可运行的代码 PR。
+
+简而言之，如果你想为自己的公司构建一个能够理解私有代码库、在安全沙箱里跑测试、并能自己提 PR 的“AI 实习生”，这个项目就是官方提供的“最佳实践方案”。
+
+
+
+langchain-ai/open-swe 是由 LangChain 官方推出的一款**开源异步编程代理（Open-Source Asynchronous Coding Agent）**框架。
+
+它的核心目标是帮助企业和团队构建自己的内部 AI 编码助手（例如 Slack 机器人、CLI 工具或 Web 应用），类似于 Stripe、Ramp 和 Coinbase 等公司内部使用的 AI 工程师工具。
+
+以下是该项目的主要特点和功能：
+
+1. 核心定位
+企业级内部工具： 它不是一个简单的聊天机器人，而是一个可以集成到公司现有流程（如 Slack、GitHub、Linear）中的异步代理。
+
+参考架构： 它提供了像 Stripe 的 "Minions" 或 Coinbase 的 "Cloudbot" 那样的成熟架构，让开发者无需从零开始构建复杂的 AI 编码工作流。
+
+2. 技术栈
+基于 LangGraph 和 Deep Agents： 利用 LangChain 最新的 LangGraph（用于构建状态化、多步循环的代理）和 Deep Agents（具备规划、子代理调度和文件系统操作能力的代理框架）开发。
+
+3. 主要功能特性
+云沙箱运行（Sandboxing）： 支持在隔离的云环境（如 Modal, Daytona, Runloop 等）中运行代码，确保安全性，并允许代理执行复杂的编译、测试任务。
+
+多渠道集成： 支持通过 Slack 命令或 Linear 工单触发任务，并能自动生成 GitHub Pull Request (PR)。
+
+上下文感知： 能够通过 AGENTS.md 或源码分析，深入理解代码库的上下文。
+
+子代理编排： 复杂任务会被拆解给专门的“子代理”处理，并通过中间件（Middleware）进行校验和把控。
+
+4. 适用场景
+自动化修复 Bug： 接收到错误报告后，自动在沙箱中重现并尝试修复。
+
+代码清理与重构： 批量执行一些机械性的代码更新任务。
+
+快速原型开发： 通过自然语言描述直接生成可运行的代码 PR。
+
+简而言之，如果你想为自己的公司构建一个能够理解私有代码库、在安全沙箱里跑测试、并能自己提 PR 的“AI 实习生”，这个项目就是官方提供的“最佳实践方案”。
+
+
+
+langchain-ai/open-swe 是由 LangChain 官方推出的一款**开源异步编程代理（Open-Source Asynchronous Coding Agent）**框架。
+
+它的核心目标是帮助企业和团队构建自己的内部 AI 编码助手（例如 Slack 机器人、CLI 工具或 Web 应用），类似于 Stripe、Ramp 和 Coinbase 等公司内部使用的 AI 工程师工具。
+
+以下是该项目的主要特点和功能：
+
+1. 核心定位
+企业级内部工具： 它不是一个简单的聊天机器人，而是一个可以集成到公司现有流程（如 Slack、GitHub、Linear）中的异步代理。
+
+参考架构： 它提供了像 Stripe 的 "Minions" 或 Coinbase 的 "Cloudbot" 那样的成熟架构，让开发者无需从零开始构建复杂的 AI 编码工作流。
+
+2. 技术栈
+基于 LangGraph 和 Deep Agents： 利用 LangChain 最新的 LangGraph（用于构建状态化、多步循环的代理）和 Deep Agents（具备规划、子代理调度和文件系统操作能力的代理框架）开发。
+
+3. 主要功能特性
+云沙箱运行（Sandboxing）： 支持在隔离的云环境（如 Modal, Daytona, Runloop 等）中运行代码，确保安全性，并允许代理执行复杂的编译、测试任务。
+
+多渠道集成： 支持通过 Slack 命令或 Linear 工单触发任务，并能自动生成 GitHub Pull Request (PR)。
+
+上下文感知： 能够通过 AGENTS.md 或源码分析，深入理解代码库的上下文。
+
+子代理编排： 复杂任务会被拆解给专门的“子代理”处理，并通过中间件（Middleware）进行校验和把控。
+
+4. 适用场景
+自动化修复 Bug： 接收到错误报告后，自动在沙箱中重现并尝试修复。
+
+代码清理与重构： 批量执行一些机械性的代码更新任务。
+
+快速原型开发： 通过自然语言描述直接生成可运行的代码 PR。
+
+简而言之，如果你想为自己的公司构建一个能够理解私有代码库、在安全沙箱里跑测试、并能自己提 PR 的“AI 实习生”，这个项目就是官方提供的“最佳实践方案”。
+
+
+
+langchain-ai/open-swe 是由 LangChain 官方推出的一款**开源异步编程代理（Open-Source Asynchronous Coding Agent）**框架。
+
+它的核心目标是帮助企业和团队构建自己的内部 AI 编码助手（例如 Slack 机器人、CLI 工具或 Web 应用），类似于 Stripe、Ramp 和 Coinbase 等公司内部使用的 AI 工程师工具。
+
+以下是该项目的主要特点和功能：
+
+1. 核心定位
+企业级内部工具： 它不是一个简单的聊天机器人，而是一个可以集成到公司现有流程（如 Slack、GitHub、Linear）中的异步代理。
+
+参考架构： 它提供了像 Stripe 的 "Minions" 或 Coinbase 的 "Cloudbot" 那样的成熟架构，让开发者无需从零开始构建复杂的 AI 编码工作流。
+
+2. 技术栈
+基于 LangGraph 和 Deep Agents： 利用 LangChain 最新的 LangGraph（用于构建状态化、多步循环的代理）和 Deep Agents（具备规划、子代理调度和文件系统操作能力的代理框架）开发。
+
+3. 主要功能特性
+云沙箱运行（Sandboxing）： 支持在隔离的云环境（如 Modal, Daytona, Runloop 等）中运行代码，确保安全性，并允许代理执行复杂的编译、测试任务。
+
+多渠道集成： 支持通过 Slack 命令或 Linear 工单触发任务，并能自动生成 GitHub Pull Request (PR)。
+
+上下文感知： 能够通过 AGENTS.md 或源码分析，深入理解代码库的上下文。
+
+子代理编排： 复杂任务会被拆解给专门的“子代理”处理，并通过中间件（Middleware）进行校验和把控。
+
+4. 适用场景
+自动化修复 Bug： 接收到错误报告后，自动在沙箱中重现并尝试修复。
+
+代码清理与重构： 批量执行一些机械性的代码更新任务。
+
+快速原型开发： 通过自然语言描述直接生成可运行的代码 PR。
+
+简而言之，如果你想为自己的公司构建一个能够理解私有代码库、在安全沙箱里跑测试、并能自己提 PR 的“AI 实习生”，这个项目就是官方提供的“最佳实践方案”。
+
+
+
