@@ -1,0 +1,15 @@
+# 环境脱敏配置
+.env
+
+# 解释器垃圾
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# 原生业务数据持久化防穿透（只建文件夹不传记录）
+logs/
+database/chroma_db/
+database/sessions/
+
+# 绝密的指纹防重文库，禁止外传
+data/md5_cache.text

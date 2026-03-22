@@ -2,11 +2,11 @@ import sys
 from pathlib import Path
 from langchain_chroma import Chroma
 from langchain_community.embeddings import DashScopeEmbeddings
-from langchain_community.document_loaders import CSVLoader
+# from langchain_community.document_loaders import CSVLoader
 
 # 确保在 Windows 终端能正确输出 UTF-8 字符
 if sys.platform == "win32":
-    sys.stdout.reconfigure(encoding='utf-8')
+    sys.stdout.reconfigure(encoding="utf-8")
 
 # 0. 定义路径 (相对于脚本文件)
 current_dir = Path(__file__).parent
@@ -18,7 +18,7 @@ persist_db_path = current_dir / "data" / "chroma_db"
 print(f"--- 正在初始化 Chroma 数据库: {persist_db_path.name} ---")
 vector_store = Chroma(
     persist_directory=str(persist_db_path),
-    embedding_function=DashScopeEmbeddings()
+    embedding_function=DashScopeEmbeddings(),  #
 )
 
 # 2. 加载 CSV 数据
@@ -46,13 +46,14 @@ vector_store = Chroma(
 print("--- 正在搜索: 'Python是不是简单易学呀' ---")
 result = vector_store.similarity_search(
     query="Python是不是简单易学呀",
-    k=3
+    k=3,  # 返回前3个最相似的结果
+    filter={"source": "黑马程序员"},  # 过滤条件
 )
 
 # 6. 打印结果
 print("\n--- 检索结果如下 ---")
 for i, doc in enumerate(result):
-    print(f"结果 {i+1}:")
+    print(f"结果 {i + 1}:")
     print(f"内容: {doc.page_content}")
     print(f"来源: {doc.metadata.get('source')}")
     print("-" * 20)

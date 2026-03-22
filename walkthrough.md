@@ -14,6 +14,81 @@
 - **Git 与项目配置**:
   - **.gitignore**: 创建了完善的忽略规则，覆盖了 `.env`、`venv`、Python 缓存等。
   - **uv 管理**: 初始化了 `uv` 项目，创建了 [pyproject.toml](file:///d:/1-application/python_project/Cinemind/pyproject.toml) (Python >= 3.12) 和 [uv.lock](file:///d:/1-application/python_project/Cinemind/uv.lock)。
+---
+
+## [2026-03-22 23:15:00] 阶段三十二：企业级 RAG 实战项目重构与规则对齐
+
+- **操作描述**: 将零散的 RAG 脚本重构为模块化、工业级的多页 Streamlit 应用，并全量对齐 `project_rules.md` 开发规范。
+- **改动详情**:
+    - **架构重构**: 引入 `core`, `services`, `config`, `utils` 四层架构，实现算理隔离。
+    - **技术升级**: 切换至 `langchain-chroma` 并配合 `st.cache_resource` 解决了异步事件循环冲突。
+    - **安全增强**: 实现了会话 ID 的 `isalnum()` 校验，防止路径穿越；引入 MD5 指纹盾实现文档防重。
+    - **规范对齐**: 全量代码切换至 `pathlib` 路径操作，补全了所有公共接口的中文 Docstring 与类型提示。
+- **验证结果**:
+    - [x] `uv run streamlit run app.py` 启动成功，UI 加载流畅。
+    - [x] 成功拦截重复文件上传，MD5 校验逻辑生效。
+    - [x] 跨页面对话历史保持正常，Session 隔离验证通过。
+
+### 🏗️ 架构深度解构
+
+#### 1. 静态类图 (Class Diagram)
+```mermaid
+classDiagram
+    class RagPipelineEngine {
+        +llm: ChatTongyi
+        +vector_store: Chroma
+        +retriever: BaseRetriever
+        +execute(query: str, session_id: str) str
+    }
+    class EnterpriseKBService {
+        +chroma: Chroma
+        +spliter: RecursiveCharacterTextSplitter
+        +sync_to_kb(text, filename) tuple
+        +get_str_digest(payload) str
+    }
+    class Chroma {
+        <<Library>>
+    }
+    class FileChatMessageHistory {
+        <<Library>>
+    }
+    
+    RagPipelineEngine --> Chroma : 引用
+    RagPipelineEngine --> FileChatMessageHistory : 管理
+    EnterpriseKBService --> Chroma : 写入
+```
+
+#### 2. 宏观时序图 (Sequence Diagram)
+```mermaid
+sequenceDiagram
+    participant User as 用户
+    participant App as app.py (UI)
+    participant Engine as RagPipelineEngine
+    participant Store as Chroma (VectorStore)
+    participant LLM as 通义千问 (LLM)
+
+    User->>App: 输入咨询问题
+    App->>Engine: get_rag_engine().execute(query)
+    Engine->>Store: 相似度检索 (Vector Search)
+    Store-->>Engine: 返回背景上下文 (Context)
+    Engine->>LLM: 组装 Prompt (Context + History + Query)
+    LLM-->>Engine: 生成 AI 回复
+    Engine-->>App: 返回纯文本响应
+    App-->>User: 玻璃态对话流渲染展示
+```
+
+#### 3. 逻辑流程图 (Logic Flow)
+```mermaid
+graph TD
+    A[开始: 文档上传] --> B{MD5 指纹审计}
+    B -- 命中缓存 --> C[拦截: 返回重复告警]
+    B -- 指纹新颖 --> D[文本分段: RecursiveSplitter]
+    D --> E[向量化: DashScopeEmbeddings]
+    E --> F[持久化: ChromaDB 挂载]
+    F --> G[结束: 更新指纹校验池]
+```
+
+---
 - **验证结果**:
   - [x] 所有文件已成功推送到 [GitHub](https://github.com/yangyepope/Cinemind.git)。
   - [x] `uv` 环境配置已通过语法验证。
@@ -451,3 +526,195 @@
   - [x] **pdf1.pdf**: 成功按页加载，输出了前两页的内容预览。
   - [x] **pdf2.pdf**: 虽然标记为加密，但验证发现实际为非加密状态，脚本成功通过降级逻辑完成加载。
   - [x] **规范对齐**: 代码完全遵循 `project_rules.md` 中的中文注释及 `pathlib` 路径规范。
+
+ ---
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
++
+ ## [2026-03-22 23:15:00] 阶段三十二：企业级 RAG 实战项目重构与规则对齐
+ 
+ - **操作描述**: 将零散的 RAG 脚本重构为模块化、工业级的多页 Streamlit 应用，并全量对齐 `project_rules.md` 开发规范。
+ - **改动详情**:
+     - **架构重构**: 引入 `core`, `services`, `config`, `utils` 四层架构，实现算理隔离。
+     - **技术升级**: 切换至 `langchain-chroma` 并配合 `st.cache_resource` 解决了异步事件循环冲突。
+     - **安全增强**: 实现了会话 ID 的 `isalnum()` 校验，防止路径穿越；引入 MD5 指纹盾实现文档防重。
+     - **规范对齐**: 全量代码切换至 `pathlib` 路径操作，补全了所有公共接口的中文 Docstring 与类型提示。
+ - **验证结果**:
+     - [x] `uv run streamlit run app.py` 启动成功，UI 加载流畅。
+     - [x] 成功拦截重复文件上传，MD5 校验逻辑生效。
+     - [x] 跨页面对话历史保持正常，Session 隔离验证通过。
+ 
+ ### 🏗️ 架构深度解构
+ 
+ #### 1. 静态类图 (Class Diagram)
+ ```mermaid
+ classDiagram
+     class RagPipelineEngine {
+         +llm: ChatTongyi
+         +vector_store: Chroma
+         +retriever: BaseRetriever
+         +execute(query: str, session_id: str) str
+     }
+     class EnterpriseKBService {
+         +chroma: Chroma
+         +spliter: RecursiveCharacterTextSplitter
+         +sync_to_kb(text, filename) tuple
+         +get_str_digest(payload) str
+     }
+     class Chroma {
+         <<Library>>
+     }
+     class FileChatMessageHistory {
+         <<Library>>
+     }
+     
+     RagPipelineEngine --> Chroma : 引用
+     RagPipelineEngine --> FileChatMessageHistory : 管理
+     EnterpriseKBService --> Chroma : 写入
+ ```
+ 
+ #### 2. 宏观时序图 (Sequence Diagram)
+ ```mermaid
+ sequenceDiagram
+     participant User as 用户
+     participant App as app.py (UI)
+     participant Engine as RagPipelineEngine
+     participant Store as Chroma (VectorStore)
+     participant LLM as 通义千问 (LLM)
+ 
+     User->>App: 输入咨询问题
+     App->>Engine: get_rag_engine().execute(query)
+     Engine->>Store: 相似度检索 (Vector Search)
+     Store-->>Engine: 返回背景上下文 (Context)
+     Engine->>LLM: 组装 Prompt (Context + History + Query)
+     LLM-->>Engine: 生成 AI 回复
+     Engine-->>App: 返回纯文本响应
+     App-->>User: 玻璃态对话流渲染展示
+ ```
+ 
+ #### 3. 逻辑流程图 (Logic Flow)
+ ```mermaid
+ graph TD
+     A[开始: 文档上传] --> B{MD5 指纹审计}
+     B -- 命中缓存 --> C[拦截: 返回重复告警]
+     B -- 指纹新颖 --> D[文本分段: RecursiveSplitter]
+     D --> E[向量化: DashScopeEmbeddings]
+     E --> F[持久化: ChromaDB 挂载]
+     F --> G[结束: 更新指纹校验池]
+ ```
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
++

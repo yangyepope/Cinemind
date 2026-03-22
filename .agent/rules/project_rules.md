@@ -7,6 +7,7 @@
 - **简体中文优先**：在所有 agent 会话和输出中，必须使用简体中文，包括代码注释、解释说明、错误诊断及所有计划文档（task.md 等）。
 - **技术术语保持原文**：函数名、库名、变量名等技术性称谓保持英文，仅解释性文字翻译。
 - **模块文档 (Docstrings)**：对于所有公共模块、类和方法，必须添加标准的中文文档字符串（Google 或 Sphinx 风格）。要求全部使用中文。
+- **逐行详尽注释 (Line-by-line Comments)**：对于业务逻辑复杂的模块（如 RAG 链、自定义 Service 等），强制要求执行“语句级”详细中文注释。注释应解释“为什么这么做”以及“底层逻辑”，而不仅是翻译代码。
 
 ---
 
@@ -57,3 +58,4 @@
 - **批量 I/O 优化**：自定义 `BaseChatMessageHistory` 子类必须重写 `add_messages` 批量方法，严禁退化为单次 I/O。
 - **官方序列化**：统一使用 `message_to_dict` 和 `messages_from_dict` 以保留 MetaData。
 - **Pydantic 数据建模**：持久化数据（如 JSON/DB 存储）必须通过 Pydantic 模型层进行结构校验。
+- **Streamlit 异步稳定性**：在 Streamlit 环境下初始化具备异步 I/O 的组件（如 Chroma, LangChain 引擎）时，必须执行 `asyncio.get_running_loop()` 校验补丁，并配合 `st.cache_resource` 实现单例生命周期管理，以防止“Event loop is closed”报错。

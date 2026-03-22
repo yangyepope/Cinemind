@@ -1,6 +1,6 @@
 from langchain_community.document_loaders import JSONLoader
 from pathlib import Path
-import json
+# import json
 
 # 1. 定义文件路径
 # __file__ 是当前脚本的路径，.parent 获取当前脚本所在的文件夹
@@ -57,7 +57,10 @@ def demo_stu_json_lines():
 
     # json_lines=True 必须设置为 True 以解析此类格式
     loader = JSONLoader(
-        file_path=str(file_path), jq_schema=".name", json_lines=True, text_content=False
+        file_path=str(file_path),
+        jq_schema=".name.",
+        json_lines=True,
+        text_content=False,
     )
 
     docs = loader.load()
