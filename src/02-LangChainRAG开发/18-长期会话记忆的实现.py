@@ -124,7 +124,7 @@ tongyi_llm = ChatTongyi(model="qwen3-max")
 chat_prompt_template = ChatPromptTemplate.from_messages([
     ("system", "你现在不仅具备短期记忆，还通过持久化文件具备了长期记忆能力。请务必结合上下文为大卫服务。"), # 顶层人格设定
     MessagesPlaceholder("chat_history"), # 动态历史消息插入点
-    ("human", "{input}") # 用户当前提出的疑问或指令
+    ("human", "{input}") # 用
 ])
 
 # 利用 LCEL 管道连接符，极简构建出“模板 -> 模型 -> 字符串”的核心处理路径

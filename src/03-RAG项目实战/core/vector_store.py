@@ -23,12 +23,12 @@ def init_vector_store() -> Chroma:
         初始化完成的 Chroma 实例。
     """
     # --- Asyncio 稳定性补丁 ---
-    # 尝试获取当前线程的事件循环，如果已关闭或不存在则新建一个
+    # 彻底解决 Streamlit 多线程环境下 "RuntimeError: Event loop is closed"
     try:
-        # 尝试获取运行中的循环
-        asyncio.get_running_loop()
+        loop = asyncio.get_event_loop()
+        if loop.is_closed():
+            raise RuntimeError("Event loop is closed")
     except RuntimeError:
-        # 如果报错（通常是因为在 Streamlit 新线程中），则创建一个新的循环并设为当前上下文
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
 

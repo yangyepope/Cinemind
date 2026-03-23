@@ -4,6 +4,7 @@
  负责构建 2C 端对话界面，集成 RAG 语音引擎与历史会话流。
 """
 
+
 # 导入 Streamlit 核心库用于构建 Web 界面
 import streamlit as st
 # 导入 UUID 库用于生成唯一的会话 ID
@@ -14,6 +15,15 @@ import time
 # 导入业务层核心引擎与日志工具
 from core.rag_chain import RagPipelineEngine  # 导入具备 LCEL 链条的 RAG 引擎
 from utils.logger import get_sys_logger  # 导入全局日志记录器
+
+# --- Asyncio & Debug 补丁 ---
+try:
+    from langchain_core.globals import set_debug
+    set_debug(False)
+except ImportError:
+    # 兼容性处理
+    pass
+
 
 # 实例化本模块专用日志器
 logger = get_sys_logger("MainApp")

@@ -1,5 +1,6 @@
 # 导入类型提示库
 from typing import List  # 处理列表类型注解
+from operator import itemgetter  # 导入对象提取器，用于从字典中取值
 
 # 导入 LangChain 核心组件
 from langchain_community.chat_models import ChatTongyi  # 导入阿里云通义千问大模型
@@ -30,6 +31,26 @@ def format_docs(docs: List[Document]) -> str:
     """
     # 遍历文档列表，提取 page_content 属性并用双换行拼接
     return "\n\n".join(doc.page_content for doc in docs)
+
+
+# 1. 定义一个超级简单的“观察哨”函数
+# rag_chain.py
+
+def inspect_data(data):
+    # 改用全局日志器 logger，它一定会显示在终端
+    logger.info("="*30)
+    logger.info(f"观测点提示 - 当前字段: {list(data.keys())}")
+    
+    if "history" in data:
+        logger.info(f"-> 历史消息注入状态: 已加载 {len(data['history'])} 条")
+        
+    if "context" in data:
+        # 只打印前 50 个词，防止日志刷屏
+        logger.info(f"-> 检索文本注入状态: {data['context'][:50]}...")
+    
+    logger.info("="*30)
+    return data
+
 
 class RagPipelineEngine:
     """
@@ -66,11 +87,14 @@ class RagPipelineEngine:
         ])
         
         # 5. 组装核心 LCEL 生态链条：
-        # context 支线：将输入透传给检索器，再经过 format_docs 函数转为字符串背景
-        # input 支线：原始问题直接透传
-        # 链条：数据准备 | 模版渲染 | 模型推理 | 结果清洗
+        # 使用 RunnablePassthrough.assign 动态向输入字典中注入 context
+        # context 支线：从输入字典提取 input 并透传给检索器，再经过 format_docs 函数转为字符串背景
+        # 链条说明：数据准备 (注入 context) | 模版渲染 | 模型推理 | 结果清洗
         self.rag_chain = (
-            {"context": self.retriever | format_docs, "input": RunnablePassthrough()}
+            RunnablePassthrough.assign(
+                context=itemgetter("input") | self.retriever | format_docs
+            )
+            | inspect_data  # <--- 插入观察哨
             | self.prompt
             | self.llm
             | StrOutputParser()
@@ -98,8 +122,8 @@ class RagPipelineEngine:
         # 记录请求审计日志
         logger.info(f"Incoming Request Hits Engine | Track_ID: {session_id} | Payload: {query[:30]}...")
         
-        # 发起链条调用，并附加配置参数（包含 session_id）
+        # 发起链条调用，以字典形式传入 Query，确保 RunnableWithMessageHistory 能正确处理历史 Injection
         return self.final_chain.invoke(
-            query, 
+            {"input": query}, 
             config={"configurable": {"session_id": session_id}}
         )
