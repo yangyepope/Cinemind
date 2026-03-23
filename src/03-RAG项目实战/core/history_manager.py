@@ -26,9 +26,10 @@ def session_history_store(session_id: str) -> BaseChatMessageHistory:
         挂载了本地文件的消息历史对象。
     """
     # --- 安全水位线：路径穿越防范 ---
-    # 遵循规范：强制检查 session_id 是否为纯字母数字组合
+    # 遵循规范：强制检查 session_id 是否合法（仅允许字母、数字和连字符）
     # 理由：防止黑客通过 "../../etc/passwd" 等构造性 ID 越权读写系统文件
-    if not session_id.isalnum():
+    # 同时允许 UUID 格式（包含连字符）
+    if not all(c.isalnum() or c == '-' for c in session_id):
         # 如果校验不通过，直接重置为默认隔离区 "default_session"
         session_id = "default_session"
 
