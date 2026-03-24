@@ -1,13 +1,16 @@
 # 导入类型提示库
 from typing import List  # 处理列表类型注解
-from operator import itemgetter  # 导入对象提取器，用于从字典中取值
 
 # 导入 LangChain 核心组件
 from langchain_community.chat_models import ChatTongyi  # 导入阿里云通义千问大模型
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder  # 导入提示词模板与历史占位符
-from langchain_core.runnables import RunnablePassthrough  # 导入数据透传组件，用于链条中的数据流转
-from langchain_core.output_parsers import StrOutputParser  # 导入字符串输出解析器，将模型返回的对象转为纯文本
-from langchain_core.runnables.history import RunnableWithMessageHistory  # 导入具备会话记忆功能的链条包装器
+from langchain_core.runnables import (
+    RunnablePassthrough,
+    RunnableLambda,
+    RunnableBranch
+)  # 导入数据流转与控制组件
+from langchain_core.output_parsers import StrOutputParser  # 导入字符串输出解析器
+from langchain_core.runnables.history import RunnableWithMessageHistory  # 导入会话记忆包装器
 from langchain_core.documents import Document  # 导入文档对象模型
 
 # 导入内部核心子模块
@@ -80,24 +83,54 @@ class RagPipelineEngine:
         # system 指令：强制模型查表回答，杜绝幻觉
         # history 占位符：自动注入此前的对话上下文
         # human 变量：承接当前用户的提问
+        # 4. 设计“问题重写”防御阵地：将模糊提问转为标准检索 Query
+        self.rewrite_prompt = ChatPromptTemplate.from_messages([
+            ("system", "根据对话历史和当前输入，生成一个【独立且具备完整语义】的搜索查询。仅仅输出重写后的查询字符串，不要有任何多余解释。"),
+            MessagesPlaceholder(variable_name="history"),
+            ("human", "{input}")
+        ])
+        self.rewrite_chain = self.rewrite_prompt | self.llm | StrOutputParser()
+
+        # 5. 设计系统提示词防御阵地：确立“影心导购”的人设
         self.prompt: ChatPromptTemplate = ChatPromptTemplate.from_messages([
             ("system", "🎯 你是影心 Cinemind 品牌旗舰店的星级导购专家。你必须基于【系统灌入的机密语料】对客人详细解答。如果系统缺乏相关库存知识知识，请直接礼貌承认无能为力，严禁出现逻辑幻觉。\n\n【机密库存语料】：\n{context}"),
             MessagesPlaceholder(variable_name="history"),
             ("human", "{input}")
         ])
         
-        # 5. 组装核心 LCEL 生态链条：
-        # 使用 RunnablePassthrough.assign 动态向输入字典中注入 context
-        # context 支线：从输入字典提取 input 并透传给检索器，再经过 format_docs 函数转为字符串背景
-        # 链条说明：数据准备 (注入 context) | 模版渲染 | 模型推理 | 结果清洗
+        # 6. 组装核心 LCEL 生态链条：
+        # 第一部分：数据增强支线 (Context + Rewrite)
+        data_prepare_chain = RunnablePassthrough.assign(
+            # 先重写问题，再用重写后的结果去检索
+            standalone_query = self.rewrite_chain,
+            context = (lambda x: x.get("standalone_query", x["input"])) | self.retriever | format_docs
+        )
+
+        # 第二部分：防御性分支（熔断机制）
+        # 优先级逻辑：
+        # 1. 如果输入包含常见的人设/基础对话关键词，允许直达 LLM 触发人设回复
+        # 2. 如果 standalone_query 判定为不需要检索（由 LLM 重写阶段决定）也可以直达
+        # 3. 只有明确需要知识库且 context 为空时，才熔断
+        
+        branching_chain = RunnableBranch(
+            (
+                # 分支 A：人设与元对话识别（启发式）
+                lambda x: any(k in x["input"].lower() for k in ["你是谁", "你好", "功能", "你是哪位", "帮我"]),
+                self.prompt | self.llm | StrOutputParser()
+            ),
+            (
+                # 分支 B：知识检索缺失（物理熔断）
+                lambda x: not x["context"].strip() or "无能为力" in x["context"],
+                RunnableLambda(lambda x: "🎯 尊敬的客人，关于您的这个问题，影心机密库中暂时没有查到详细记录。您可以尝试换一个问法，或者咨询人工客服。")
+            ),
+            # 默认分支：正常 RAG 推理
+            self.prompt | self.llm | StrOutputParser()
+        )
+
         self.rag_chain = (
-            RunnablePassthrough.assign(
-                context=itemgetter("input") | self.retriever | format_docs
-            )
+            data_prepare_chain
             | inspect_data  # <--- 插入观察哨
-            | self.prompt
-            | self.llm
-            | StrOutputParser()
+            | branching_chain
         )
         
         # 6. 挂载会话记忆外壳：将静态链条升级为具备“回头看”能力的动态链条
