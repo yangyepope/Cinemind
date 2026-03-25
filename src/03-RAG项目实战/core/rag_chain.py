@@ -36,6 +36,32 @@ def format_docs(docs: List[Document]) -> str:
     return "\n\n".join(doc.page_content for doc in docs)
 
 
+# 指代词与省略语义词典：若用户输入包含这些词，则说明问题依赖上下文，需要 LLM 重写
+# 否则视为独立完整问题，直接跳过重写链，节省一次 LLM 调用（Token + 延迟减半）
+_REFERENCE_KEYWORDS = [
+    "它", "他", "她", "它们", "他们", "她们",
+    "这个", "那个", "这种", "那种", "这款", "那款",
+    "上面", "上述", "前面", "刚才", "之前说的",
+    "这", "那", "此", "该",
+]
+
+def _needs_rewrite(input_text: str) -> bool:
+    """
+    短路检测器：判断用户当前输入是否包含指代词或省略语义。
+    
+    原理：
+        - 有指代词 → 问题语义不完整 → 必须触发 LLM 重写以补全语义
+        - 无指代词 → 问题自包含    → 直接跳过重写，节省一次 LLM 调用
+    
+    Args:
+        input_text: 用户的原始输入字符串。
+    
+    Returns:
+        True 表示需要重写，False 表示可以直接用原始输入检索。
+    """
+    return any(keyword in input_text for keyword in _REFERENCE_KEYWORDS)
+
+
 # 1. 定义一个超级简单的“观察哨”函数
 # rag_chain.py
 
@@ -99,10 +125,25 @@ class RagPipelineEngine:
         ])
         
         # 6. 组装核心 LCEL 生态链条：
-        # 第一部分：数据增强支线 (Context + Rewrite)
+        # 第一部分：数据增强支线 (Context + 短路重写)
+        # 优化说明：引入 _needs_rewrite 短路机制
+        # - 若问题含指代词（如"它", "这个"）→ 触发 LLM 重写（第 1 次 LLM 调用）
+        # - 若问题语义自包含                 → 直接复用原始 input，跳过重写，节省一次调用
+        def smart_rewrite(x: dict) -> str:
+            """智能重写路由：按需触发 LLM 改写，避免不必要的双重调用。"""
+            if _needs_rewrite(x["input"]):
+                # 检测到指代词，上下文依赖，必须重写
+                logger.debug(f"[QueryRewrite] 检测到指代词，触发 LLM 重写 | 原始: {x['input'][:30]}")
+                return self.rewrite_chain.invoke(x)
+            else:
+                # 问题自包含，直接透传原始输入
+                logger.debug(f"[QueryRewrite] 问题自包含，跳过重写 | 原始: {x['input'][:30]}")
+                return x["input"]
+
         data_prepare_chain = RunnablePassthrough.assign(
-            # 先重写问题，再用重写后的结果去检索
-            standalone_query = self.rewrite_chain,
+            # 通过 smart_rewrite 按需决定是否调用 LLM
+            standalone_query = RunnableLambda(smart_rewrite),
+            # 用 standalone_query 的结果去向量库检索相关文档
             context = (lambda x: x.get("standalone_query", x["input"])) | self.retriever | format_docs
         )
 
@@ -114,8 +155,36 @@ class RagPipelineEngine:
         
         branching_chain = RunnableBranch(
             (
-                # 分支 A：人设与元对话识别（启发式）
-                lambda x: any(k in x["input"].lower() for k in ["你是谁", "你好", "功能", "你是哪位", "帮我"]),
+                # 分支 A：人设与元对话识别（启发式关键词匹配）
+                # 覆盖场景：
+                #   - 问候与寒暄：你好、早上好、在吗 等
+                #   - 人设询问：你是谁、你是AI吗、你有什么功能 等
+                #   - 求助与引导：帮我、怎么用、如何开始 等
+                #   - 情绪表达：谢谢、太厉害了、好的 等（避免错误进入检索）
+                #   - 退出与结束：再见、拜拜、结束 等
+                #   - 购物引导：我想买、推荐一下、帮我选 等（直达人设引导）
+                lambda x: any(k in x["input"].lower() for k in [
+                    # --- 问候与寒暄 ---
+                    "你好", "您好", "hi", "hello", "早上好", "下午好", "晚上好",
+                    "在吗", "在不在", "有人吗", "客服", "人工",
+                    # --- 人设与身份询问 ---
+                    "你是谁", "你是什么", "你是ai", "你是机器人", "你是人吗",
+                    "你是哪位", "你叫什么", "你的名字", "介绍一下你自己",
+                    "你有什么功能", "功能", "你能做什么", "你会什么",
+                    "你是影心吗", "你是导购吗",
+                    # --- 求助与操作引导 ---
+                    "帮我", "帮一下", "请帮", "怎么用", "如何使用",
+                    "怎么开始", "如何开始", "怎么操作", "教我",
+                    "我不会", "我该怎么", "我应该怎么",
+                    # --- 购物意图引导 ---
+                    "我想买", "我要买", "想购买", "帮我选", "推荐一下",
+                    "有什么推荐", "什么好", "买什么好", "怎么选",
+                    # --- 情绪与反馈 ---
+                    "谢谢", "感谢", "太棒了", "好的", "明白了",
+                    "知道了", "了解了", "收到", "666", "厉害",
+                    # --- 退出与结束 ---
+                    "再见", "拜拜", "bye", "结束", "退出", "没问题了", "就这样",
+                ]),
                 self.prompt | self.llm | StrOutputParser()
             ),
             (

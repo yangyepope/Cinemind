@@ -72,3 +72,33 @@ def chat_with_stream():
         if chunk.choices and chunk.choices[0].delta.content:
             print(chunk.choices[0].delta.content, end="", flush=True)
 ```
+
+---
+
+## 7. Markdown 文档中的可视化表格规范
+
+当需要在任何 `.md` 文档中呈现结构化数据（如技术栈对照、参数说明、配置清单等），**必须**优先使用 HTML `<table>` 代替纯 Markdown 表格语法，以确保在所有查看器中都能渲染为带边框的直观表格。
+
+**标准朴素风格模板**：
+
+```html
+<table style="border-collapse: collapse; width: 100%;">
+  <thead>
+    <tr>
+      <th style="border: 1px solid #d0d0d0; padding: 6px 12px; background-color: #f0f0f0; text-align: left;">列名一</th>
+      <th style="border: 1px solid #d0d0d0; padding: 6px 12px; background-color: #f0f0f0; text-align: left;">列名二</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="border: 1px solid #d0d0d0; padding: 6px 12px;">数据行</td>
+      <td style="border: 1px solid #d0d0d0; padding: 6px 12px;">数据内容</td>
+    </tr>
+  </tbody>
+</table>
+```
+
+**规范要点**：
+- 使用灰色细边框 `#d0d0d0`，表头仅用浅灰背景 `#f0f0f0` 区分，无彩色装饰。
+- 行内联样式，保证在不同 Markdown 渲染器下的样式一致性。
+- VS Code 中使用 `Ctrl + Shift + V` 预览验证渲染效果。

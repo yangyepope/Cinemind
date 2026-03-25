@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # Cinemind 项目开发与 AI 助手规则总则
 
 本文档定义了 Cinemind 项目的全局开发准则，适用于 AI 助手协助开发时的所有行为。
@@ -53,9 +57,4 @@
 
 ---
 
-## 7. LangChain 特色组件规范 (Specialized Components)
 
-- **批量 I/O 优化**：自定义 `BaseChatMessageHistory` 子类必须重写 `add_messages` 批量方法，严禁退化为单次 I/O。
-- **官方序列化**：统一使用 `message_to_dict` 和 `messages_from_dict` 以保留 MetaData。
-- **Pydantic 数据建模**：持久化数据（如 JSON/DB 存储）必须通过 Pydantic 模型层进行结构校验。
-- **Streamlit 异步稳定性**：在 Streamlit 环境下初始化具备异步 I/O 的组件（如 Chroma, LangChain 引擎）时，必须执行 `asyncio.get_running_loop()` 校验补丁，并配合 `st.cache_resource` 实现单例生命周期管理，以防止“Event loop is closed”报错。

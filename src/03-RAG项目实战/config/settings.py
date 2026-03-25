@@ -57,7 +57,15 @@ LLM_MODEL_NAME: str = os.getenv("LLM_MODEL_NAME", "qwen-turbo")
 
 # 定义系统提示词版本或标识（可选，当前保留默认配置路径）
 # 所有的业务级配置建议在此处收口，避免在业务代码中硬编码语义。
-# DB_ROOT / "sessions" # 这一行似乎是遗留的，没有实际作用，可以删除或注释
+
+# 定义文档切分块大小：每个向量化单元的最大字符数
+CHUNK_SIZE: int = int(os.getenv("CHUNK_SIZE", "500"))
+
+# 定义相邻块重叠字符数：保证切分处的语义连续性
+CHUNK_OVERLAP: int = int(os.getenv("CHUNK_OVERLAP", "50"))
+
+# 定义内存中最大会话缓存数量：超出后自动淘汰最久未访问的会话（LRU策略）
+SESSION_CACHE_LIMIT: int = int(os.getenv("SESSION_CACHE_LIMIT", "500"))
 
 # --- 环境自举维护系统 ---
 
@@ -73,19 +81,5 @@ def _enforce_environment() -> None:
         # parents=True 表示递归创建父目录，exist_ok=True 表示目录存在时不报错
         _folder.mkdir(parents=True, exist_ok=True)
 
-# 立即执行环境强制校验，确保后续模块导入时路径引用绝对安全
+# 执行自举（首次运行即建仓，且仅调用一次）
 _enforce_environment()
-
-# 校验 MD5 指纹缓存文件是否存在
-if not MD5_CACHE_PATH.exists():
-    # 使用 touch 命令创建一个空文件，确保后续读取逻辑不会因文件缺失而崩溃
-    MD5_CACHE_PATH.touch()
-
-# 执行自举
-_enforce_environment()
-
-# ---- 引擎动力学参数 (Engine Parameters) ----
-
-EMBEDDING_MODEL_NAME: str = "text-embedding-v2"  # 嵌入大模型标号
-LLM_MODEL_NAME: str = "qwen-turbo"             # 核心推理大模型标号
-TOP_K_RETRIEVAL: int = 3                        # 检索召回数量上限

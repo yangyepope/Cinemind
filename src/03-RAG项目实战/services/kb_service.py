@@ -1,5 +1,6 @@
 # 导入原生库
 import hashlib  # 用于计算文本 MD5 指纹以便去重
+import threading  # 引入线程锁，防御并发写入指纹文件时的竞争条件
 from typing import List, Tuple  # 导入类型提示注解
 
 # 导入 LangChain 相关组件
@@ -7,12 +8,16 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter  # 导入递
 from langchain_core.documents import Document  # 导入文档对象模型
 
 # 导入项目配置与核心组件
-from config.settings import MD5_CACHE_PATH  # 从 settings 导入指纹库物理路径
+from config.settings import MD5_CACHE_PATH, CHUNK_SIZE, CHUNK_OVERLAP  # 从 settings 导入指纹库路径与切分参数
 from core.vector_store import init_vector_store  # 导入向量库初始化函数
 from utils.logger import get_sys_logger  # 导入日志记录工具
 
 # 实例化知识库服务专用日志器
 logger = get_sys_logger("KnowledgeBaseService")
+
+# 全局线程锁：保护 MD5 指纹文件的并发写入安全性
+# 当多用户同时上传文档时，此锁防止两个线程同时写入导致文件损坏
+_md5_cache_lock = threading.Lock()
 
 class EnterpriseKBService:
     """
@@ -30,8 +35,9 @@ class EnterpriseKBService:
         # 1. 挂载向量数据库后台
         self.chroma = init_vector_store()
         
-        # 2. 配置切分器策略：每块 500 字，相邻块重叠 50 字以保证语义不丢失
-        self.spliter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
+        # 2. 配置切分器策略：从设置中读取切分参数，不再硬编码
+        # chunk_size: 每个块的最大字符数； chunk_overlap: 相邻块重叠字符数（保证语义不丢失）
+        self.spliter = RecursiveCharacterTextSplitter(chunk_size=CHUNK_SIZE, chunk_overlap=CHUNK_OVERLAP)
 
     def get_str_digest(self, payload: str) -> str:
         """
@@ -68,14 +74,17 @@ class EnterpriseKBService:
     def mark_cache(self, str_digest: str) -> None:
         """
         指纹入库员：将新文档的指纹永久记入防御池。
+        内置线程锁，保证高并发场景下文件内容不会损坏。
         
         Args:
             str_digest: 已通过验证的新指纹。
         """
-        # 以“追加模式”打开指纹缓存文件
-        with open(MD5_CACHE_PATH, "a", encoding="utf-8") as f:
-            # 写入指纹并强制换行
-            f.write(str_digest + "\n")
+        # 加锁后再写入，防止并发写入竞争条件导致文件损坏
+        with _md5_cache_lock:
+            # 以“追加模式”打开指纹缓存文件
+            with open(MD5_CACHE_PATH, "a", encoding="utf-8") as f:
+                # 写入指纹并强制换行
+                f.write(str_digest + "\n")
 
     def sync_to_kb(self, text_payload: str, filename: str) -> Tuple[bool, str]:
         """
